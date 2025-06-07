@@ -4,5 +4,5 @@ class MagicBook {
     // your code
 };
 
-void checkAncientStatus(const MagicBook& book);
-void checkMagicalTitle(const MagicBook& book);
+int evaluateBookSize(const MagicBook& book);
+bool isFromArcaneYear(const MagicBook& book);
