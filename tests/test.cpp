@@ -1,6 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 #include "magicbook.h"
+#include <string>
 
 SECTION("Field types") {
         static_assert(std::is_same_v<decltype(MagicBook::title), std::string>, 
