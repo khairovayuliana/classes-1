@@ -1,5 +1,5 @@
 CXX_FLAGS = -std=c++20 -O3 -g -fsanitize=address -Iinclude
-SOURCES = src/point.cpp
+SOURCES = src/magicbook.cpp
 
 .PHONY: all
 all:
