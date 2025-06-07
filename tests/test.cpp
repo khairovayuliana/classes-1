@@ -1,62 +1,88 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
-#include <sstream>
-#include <iomanip>
-#include <cmath>
+#include "magicbook.h"
 
-#include "point.h"
+SECTION("Field types") {
+        static_assert(std::is_same_v<decltype(MagicBook::title), std::string>, 
+            "title must be of type std::string");
+        static_assert(std::is_same_v<decltype(MagicBook::year), int>, 
+            "year must be of type int");
+        static_assert(std::is_same_v<decltype(MagicBook::pages), int>, 
+            "pages must be of type int");
+    }
 
-TEST_CASE("Point: Structure definition and initialization") {
-    Point p;
-    REQUIRE(sizeof(p.x) == sizeof(double));
-    REQUIRE(sizeof(p.y) == sizeof(double));
+TEST_CASE("Class definition and initialization") {
+    SECTION("Default initialization") {
+        MagicBook book;
+        REQUIRE(book.title == ""); // Check if title is initialized to ""
+        REQUIRE(book.year == 0); // Check if year is initialized to 0
+        REQUIRE(book.pages == 0); // Check if pages is initialized to 0
+    }
+
+    SECTION("Field assignment and access") {
+        MagicBook book;
+        book.title = "Advanced Spellcasting";
+        book.year = 1492;
+        book.pages = 742;
+        
+        REQUIRE(book.title == "Advanced Spellcasting");
+        REQUIRE(book.year == 1492);
+        REQUIRE(book.pages == 742);
+    }
+
+TEST_CASE("Book size evaluation") {
+    MagicBook book;
+    
+    SECTION("Class 1 books") {
+        book.pages = 1000;
+        REQUIRE(evaluateBookSize(book) == 1);
+        book.pages = 1500;
+        REQUIRE(evaluateBookSize(book) == 1);
+        book.pages = 2000;
+        REQUIRE(evaluateBookSize(book) == 1);
+    }
+    
+    SECTION("Class 2 books") {
+        book.pages = 500;
+        REQUIRE(evaluateBookSize(book) == 2);
+        book.pages = 750;
+        REQUIRE(evaluateBookSize(book) == 2);
+        book.pages = 999;
+        REQUIRE(evaluateBookSize(book) == 2);
+    }
+    
+    SECTION("Class 3 books") {
+        book.pages = 1;
+        REQUIRE(evaluateBookSize(book) == 3);
+        book.pages = 499;
+        REQUIRE(evaluateBookSize(book) == 3);
+        book.pages = 250;
+        REQUIRE(evaluateBookSize(book) == 3);
+    }
 }
 
-TEST_CASE("Point: Initialization with zeros by default") {
-    Point p;
-    REQUIRE(std::abs(p.x) < 1e-9);  // Check if x is initialized to 0
-    REQUIRE(std::abs(p.y) < 1e-9);  // Check if y is initialized to 0
-}
-
-TEST_CASE("Square area of rectangle defined by two points") {
-    Point a{1.0, 2.0};
-    Point b{4.0, 6.0};
-
-    double area = rectangleSquare(a, b);
-    REQUIRE(area == Approx(12.0).epsilon(1e-9));
-}
-
-TEST_CASE("Rectangle area: zero area when points are the same") {
-    Point a{2.5, 3.5};
-    Point b{2.5, 3.5};
-    double area = rectangleSquare(a, b);
-    REQUIRE(area == Approx(0.0).epsilon(1e-9));
-}
-
-TEST_CASE("Rectangle area: negative coordinates") {
-    Point a{-2.0, -3.0};
-    Point b{-5.0, -7.0};
-    double area = rectangleSquare(a, b);
-    REQUIRE(area == Approx(12.0).epsilon(1e-9));
-}
-
-TEST_CASE("Rectangle area: mixed positive and negative coordinates") {
-    Point a{-1.0, 2.0};
-    Point b{3.0, -2.0};
-    double area = rectangleSquare(a, b);
-    REQUIRE(area == Approx(16.0).epsilon(1e-9));
-}
-
-TEST_CASE("Rectangle area: one axis same") {
-    Point a{0.0, 5.0};
-    Point b{10.0, 5.0};
-    double area = rectangleSquare(a, b);
-    REQUIRE(area == Approx(0.0).epsilon(1e-9));
-}
-
-TEST_CASE("Rectangle area: large values") {
-    Point a{1e6, 2e6};
-    Point b{2e6, 4e6};
-    double area = rectangleSquare(a, b);
-    REQUIRE(area == Approx(2e12).epsilon(1e-3));
-}
+TEST_CASE("Arcane year detection") {
+    MagicBook book;
+    
+    SECTION("Arcane years") {
+        book.year = 100;
+        REQUIRE(isFromArcaneYear(book));
+        book.year = 200;
+        REQUIRE(isFromArcaneYear(book));
+        book.year = 1800;
+        REQUIRE(isFromArcaneYear(book));
+        book.year = 2000;
+        REQUIRE(isFromArcaneYear(book));
+    }
+    
+    SECTION("Non-arcane years") {
+        book.year = 0;
+        REQUIRE_FALSE(isFromArcaneYear(book));
+        book.year = 99;
+        REQUIRE_FALSE(isFromArcaneYear(book));
+        book.year = 101;
+        REQUIRE_FALSE(isFromArcaneYear(book));
+        book.year = 2025;
+        REQUIRE_FALSE(isFromArcaneYear(book));
+    }
+    
