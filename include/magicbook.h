@@ -5,5 +5,5 @@ public:
     // your code
 };
 
-BookClass evaluateBookSize(const MagicBook& book);
+MagicBook::BookClass evaluateBookSize(const MagicBook& book);
 bool isFromArcaneYear(const MagicBook& book);
